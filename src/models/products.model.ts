@@ -7,7 +7,7 @@ class ProductModel {
   constructor(connection: Pool) {
     this.connection = connection;
   }
-
+  
   public createProduct = async (product: Product): Promise<Product> => {
     const { name, amount } = product;
     const result = await this.connection.query<ResultSetHeader>(
@@ -17,6 +17,13 @@ class ProductModel {
     const [data] = result;
     const { insertId } = data;
     return { id: insertId, ...product };
+  };
+
+  public getProducts = async (): Promise<Product[]> => {
+    const [products] = await this.connection.execute(
+      'SELECT * FROM Trybesmith.Products',
+    );
+    return products as Product[];
   };
 }
 
